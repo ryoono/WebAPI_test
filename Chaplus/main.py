@@ -12,12 +12,14 @@ load_dotenv(verbose=True)
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
+CHAPLUS_KEY = os.environ.get("CHAPLUS_KEY")
+
 # リクエストに必要なパラメーター
 headers = {'content-type':'text/json'}
 payload = {'utterance':word}
 
 # APIKEYの部分は自分のAPI鍵を代入してください
-url = 'https://www.chaplus.jp/v1/chat?apikey=' + os.environ.get("CHAPLUS_KEY")
+url = 'https://www.chaplus.jp/v1/chat?apikey=' + CHAPLUS_KEY
 
 # APIを叩く
 res = requests.post(url=url, headers=headers, data=json.dumps(payload))
