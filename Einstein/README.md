@@ -1,3 +1,3 @@
-## Chaplus test code
+## Einstein test code
 
 python 3.7.10

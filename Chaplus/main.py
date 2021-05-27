@@ -26,3 +26,6 @@ res = requests.post(url=url, headers=headers, data=json.dumps(payload))
 
 # 最適と思われるレスポンスを抽出
 print( res.json()['bestResponse']['utterance'] )
+
+# jsonの全文を表示する
+print( res.json() )
