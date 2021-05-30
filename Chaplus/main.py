@@ -16,7 +16,7 @@ CHAPLUS_KEY = os.environ.get("CHAPLUS_KEY")
 
 # リクエストに必要なパラメーター
 headers = {'content-type':'text/json'}
-payload = {'utterance':word}
+payload = { 'utterance':word, 'username':'先輩', 'agentState':{'agentName':'エージェント', 'age':'20歳'}}
 
 # APIKEYの部分は自分のAPI鍵を代入してください
 url = 'https://www.chaplus.jp/v1/chat?apikey=' + CHAPLUS_KEY
@@ -28,4 +28,7 @@ res = requests.post(url=url, headers=headers, data=json.dumps(payload))
 print( res.json()['bestResponse']['utterance'] )
 
 # jsonの全文を表示する
-print( res.json() )
+# jsonファイルはrawデータのため、整形して出力する
+data = json.loads( json.dumps( res.json(), ensure_ascii=False))
+print( json.dumps( data, ensure_ascii=False, indent=3) ) # インデントはスペース3文字
+# print( res.json() )
