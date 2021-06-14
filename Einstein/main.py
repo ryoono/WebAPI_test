@@ -41,7 +41,7 @@ def get_OAuth_Token():
 
     # エポック秒の取得(現在時刻から1分後)
     ut = int(time.time()) + 60
-    ut = 1623536606
+    ut = 1623640359
 
     #JWT Payload
     jwt_payload = {
@@ -50,23 +50,27 @@ def get_OAuth_Token():
         "exp": ut
     }
 
-    print(json.dumps(jwt_payload))
+    # print(json.dumps(jwt_payload))
 
     # https://ja.wikipedia.org/wiki/JSON_Web_Token
     # Base64エンコード
-    jwt_headers_base64 = base64.b64encode( str(json.dumps(jwt_headers) ).encode() )
-    jwt_payload_base64 = base64.b64encode( str(json.dumps(jwt_payload) ).encode() )
+    # .replace(b'=', b'') ... パディングの'='を消す
+    jwt_headers_base64 = base64.b64encode( str(jwt_headers).encode() )#.replace(b'=', b'')
+    jwt_payload_base64 = base64.b64encode( str(json.dumps(jwt_payload) ).encode() )#.replace(b'=', b'')
     print(jwt_headers_base64)
-    print(base64.b64decode(jwt_payload_base64).replace('=', ''))
+    print(jwt_payload_base64)
     signature_target = jwt_headers_base64 + b'.' + jwt_payload_base64
+    # print(signature_target)
 
     # メッセージと秘密鍵から署名を生成
     # https://qiita.com/sho7650/items/1dd65a1db785f902a2d6
     # https://www.python.ambitious-engineer.com/archives/2042
-    private_key = RSA.import_key( EINSTEIN_PLATFORM_KEY.replace('\\n', '\n').encode() )
+    # print( EINSTEIN_PLATFORM_KEY.replace('\\n', '\n') )
+    private_key = RSA.import_key( EINSTEIN_PLATFORM_KEY.replace('\\n', '\n') )
     h = SHA256.new( signature_target )
     jwt_signature = pkcs1_15.new( private_key ).sign( h )
-    print(base64.b64encode( str(jwt_signature).encode() ))
+
+    print(jwt_signature.encode('bytes'))
 
     jwt = signature_target + b'.' + base64.b64encode( str(jwt_signature).encode() )
 
