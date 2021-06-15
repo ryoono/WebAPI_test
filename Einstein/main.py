@@ -7,11 +7,12 @@ import json
 import requests
 
 # JWT用
+import jwt
 import time
 import base64
 from Crypto.PublicKey import RSA
-from Crypto.Hash import SHA256
-from Crypto.Signature import pkcs1_15
+# from Crypto.Hash import SHA256
+# from Crypto.Signature import pkcs1_15
 
 def main():
 
@@ -39,9 +40,9 @@ def get_OAuth_Token():
         "typ" : "JWT"
     }
 
-    # エポック秒の取得(現在時刻から1分後)
-    ut = int(time.time()) + 60
-    ut = 1623640359
+    # エポック秒の取得(現在時刻から5分後)
+    ut = int(time.time()) + 300
+    # ut = 1623640359
 
     #JWT Payload
     jwt_payload = {
@@ -55,11 +56,11 @@ def get_OAuth_Token():
     # https://ja.wikipedia.org/wiki/JSON_Web_Token
     # Base64エンコード
     # .replace(b'=', b'') ... パディングの'='を消す
-    jwt_headers_base64 = base64.b64encode( str(jwt_headers).encode() )#.replace(b'=', b'')
-    jwt_payload_base64 = base64.b64encode( str(json.dumps(jwt_payload) ).encode() )#.replace(b'=', b'')
-    print(jwt_headers_base64)
-    print(jwt_payload_base64)
-    signature_target = jwt_headers_base64 + b'.' + jwt_payload_base64
+    # jwt_headers_base64 = base64.b64encode( str(jwt_headers).encode() )#.replace(b'=', b'')
+    # jwt_payload_base64 = base64.b64encode( str(json.dumps(jwt_payload) ).encode() )#.replace(b'=', b'')
+    # print(jwt_headers_base64)
+    # print(jwt_payload_base64)
+    # signature_target = jwt_headers_base64 + b'.' + jwt_payload_base64
     # print(signature_target)
 
     # メッセージと秘密鍵から署名を生成
@@ -67,12 +68,16 @@ def get_OAuth_Token():
     # https://www.python.ambitious-engineer.com/archives/2042
     # print( EINSTEIN_PLATFORM_KEY.replace('\\n', '\n') )
     private_key = RSA.import_key( EINSTEIN_PLATFORM_KEY.replace('\\n', '\n') )
-    h = SHA256.new( signature_target )
-    jwt_signature = pkcs1_15.new( private_key ).sign( h )
+    key = private_key.exportKey()
 
-    print(jwt_signature.encode('bytes'))
+    encoded_jwt = jwt.encode(jwt_payload, key=key, algorithm="RS256")
+    print(encoded_jwt)
+    # h = SHA256.new( signature_target )
+    # jwt_signature = pkcs1_15.new( private_key ).sign( h )
 
-    jwt = signature_target + b'.' + base64.b64encode( str(jwt_signature).encode() )
+    # print(jwt_signature.encode('bytes'))
+
+    # jwt = signature_target + b'.' + base64.b64encode( str(jwt_signature).encode() )
 
     return jwt
 
