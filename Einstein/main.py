@@ -8,6 +8,7 @@ import json
 
 from PIL import Image
 import io
+import base64
 
 # JWT用
 import jwt
@@ -32,22 +33,30 @@ def main():
     # img_bytes = img_bytes.getvalue()
     print(oauth)
 
+    # 画像認識
+    # https://metamind.readme.io/reference#prediction-with-image-file
+    # Qiitaじゃなくて公式リファレンスを読まないといかん(戒め)
     headers = {
-        'Authorization': 'Bearer ' + oauth,
+        'Authorization': 'Bearer ' + str(oauth),
         'Cache-Control': 'no-cache',
-        'Content-Type': 'multipart/form-data'
+        # 理由は分からないが、以下はいらないらしい
+        # https://teratail.com/questions/326624
+        #'Content-Type': 'multipart/form-data'
     }
 
+    # https://qiita.com/TsubasaSato/items/908d4f5c241091ecbf9b
+    # base64 エンコード
+    image_path = r"zou.jpg"
+    with open( image_path, 'rb') as f:
+        data = f.read()
+    #Base64で画像をエンコード
+    encode=base64.b64encode(data)
     files = {
-        'sampleLocation': 'https://einstein.ai/images/generalimage.jpg',
+        'sampleBase64Content': encode,
         'modelId': 'GeneralImageClassifier'
     }
 
-    print("")
-    print(headers)
-    print("")
     print(files)
-    print("")
 
     response = requests.post('https://api.einstein.ai/v2/vision/predict', headers=headers, files=files)
 
@@ -63,9 +72,9 @@ def generate_OAuth_Token():
     EINSTEIN_PLATFORM_KEY = os.environ.get("EINSTEIN_PLATFORM_KEY")
     EINSTEIN_PLATFORM_SERVICES_USERNAME = os.environ.get("EINSTEIN_PLATFORM_SERVICES_USERNAME")
 
-    # エポック秒の取得(現在時刻から30秒後)
+    # エポック秒の取得(現在時刻から15秒後)
     # OAuthトークンの有効時間
-    ut = int(time.time()) + 30
+    ut = int(time.time()) + 15
 
     #JWT Payload
     # https://ja.wikipedia.org/wiki/JSON_Web_Token
@@ -92,15 +101,15 @@ def generate_OAuth_Token():
 def get_Access_Token( encoded_jwt ):
 
     # ヘッダーとデータの組み立て
-    headers = {'Content-type': 'application/x-www-form-urlencoded'}
-    data = {
+    headers_oauth = {'Content-type': 'application/x-www-form-urlencoded'}
+    data_oauth = {
         'grant_type'    : 'urn:ietf:params:oauth:grant-type:jwt-bearer',
         'assertion'     : str(encoded_jwt)
     }
 
     # OAuthトークン取得申請
-    response = requests.post('https://api.einstein.ai/v2/oauth2/token', headers=headers, data=data)
-    res_json = json.loads(response.text)
+    response = requests.post( 'https://api.einstein.ai/v2/oauth2/token', headers=headers_oauth, data=data_oauth)
+    res_json = json.loads( response.text )
 
     return res_json['access_token']
 
