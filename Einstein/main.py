@@ -34,7 +34,7 @@ def main():
     print(oauth)
 
     # 画像認識
-    # https://metamind.readme.io/reference#prediction-with-image-file
+    # https://metamind.readme.io/reference#prediction-with-image-base64-string
     # Qiitaじゃなくて公式リファレンスを読まないといかん(戒め)
     headers = {
         'Authorization': 'Bearer ' + str(oauth),
