@@ -15,17 +15,22 @@ MEBO_API_KEY = os.environ.get("MEBO_API_KEY")
 MEBO_AGENT_KEY = os.environ.get("MEBO_AGENT_KEY")
 MEBO_UID = os.environ.get("MEBO_UID")
 
-word = input("なにか話しかけてみてください：")
+print("終了 : q")
 
-# リクエストに必要なパラメーター
-headers = { 'Content-Type':'application/json'}
-payload = { 'api_key':MEBO_API_KEY, 'agent_id':MEBO_AGENT_KEY, 'utterance':word, 'uid':MEBO_UID}
+word = input("あなた：")
 
-# APIKEYの部分は自分のAPI鍵を代入してください
-url = 'https://api-mebo.dev/api'
+while word != "q":
+   # リクエストに必要なパラメーター
+   headers = { 'Content-Type':'application/json'}
+   payload = { 'api_key':MEBO_API_KEY, 'agent_id':MEBO_AGENT_KEY, 'utterance':word, 'uid':MEBO_UID}
 
-# APIを叩く
-res = requests.post(url=url, headers=headers, data=json.dumps(payload))
+   # APIKEYの部分は自分のAPI鍵を代入してください
+   url = 'https://api-mebo.dev/api'
 
-# 最適と思われるレスポンスを抽出
-print( res.json()['bestResponse']['utterance'] )
+   # APIを叩く
+   res = requests.post(url=url, headers=headers, data=json.dumps(payload))
+
+   # 最適と思われるレスポンスを抽出
+   print( "AI：" + res.json()['bestResponse']['utterance'] )
+
+   word = input("あなた：")
