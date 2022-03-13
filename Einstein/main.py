@@ -31,7 +31,7 @@ def main():
     # img_bytes = io.BytesIO()
     # img.save(img_bytes, format='PNG')
     # img_bytes = img_bytes.getvalue()
-    print(oauth)
+    # print( oauth )
 
     # 画像認識
     # https://metamind.readme.io/reference#prediction-with-image-base64-string
@@ -56,11 +56,11 @@ def main():
         'modelId': 'GeneralImageClassifier'
     }
 
-    print(files)
+    # print( files )
 
     response = requests.post('https://api.einstein.ai/v2/vision/predict', headers=headers, files=files)
 
-    print(response.text)
+    print( response.text.json()['probabilities']['label'] )
 
 
 # OAuthトークンを取得するためのJWT作成

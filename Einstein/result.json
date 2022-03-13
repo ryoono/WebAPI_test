@@ -1,0 +1,25 @@
+{
+   "probabilities":[
+      {
+         "probability":0.6931517,
+         "label":"african elephant, loxodonta africana"
+      },
+      {
+         "probability":0.29062918,
+         "label":"tusker"
+      },
+      {
+         "probability":0.016218808,
+         "label":"indian elephant, elephas maximus"
+      },
+      {
+         "probability":8.0875374E-8,
+         "label":"triceratops"
+      },
+      {
+         "probability":6.230213E-8,
+         "label":"warthog"
+      }
+   ],
+   "object":"predictresponse"
+}
